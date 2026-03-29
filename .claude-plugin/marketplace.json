@@ -1,0 +1,13 @@
+{
+  "name": "will-my-claude",
+  "plugins": [
+    {
+      "name": "will-my-claude",
+      "source": {
+        "source": "github",
+        "repo": "sdgranger/will-my-claude"
+      },
+      "version": "1.0.0"
+    }
+  ]
+}

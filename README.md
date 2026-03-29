@@ -10,7 +10,20 @@ Claude Code를 더 잘 활용하기 위한 스킬, 설정 모음입니다.
 
 스킬을 설치하면 Claude Code가 cmux 환경을 감지하고 패인 분할, 내장 브라우저, 알림, 사이드바 등을 **알아서** 활용합니다.
 
-### 설치
+### 설치 (플러그인)
+
+Claude Code에서 아래 명령을 실행하세요:
+
+```
+/plugin marketplace add sdgranger/will-my-claude
+/plugin install will-my-claude
+```
+
+GitHub에 업데이트가 올라오면 자동으로 반영됩니다.
+
+### 설치 (수동)
+
+플러그인 대신 파일을 직접 복사할 수도 있습니다 (자동 업데이트 없음):
 
 ```bash
 git clone https://github.com/sdgranger/will-my-claude.git
@@ -18,8 +31,6 @@ mkdir -p ~/.claude/skills/cmux/references
 cp will-my-claude/skills/cmux/SKILL.md ~/.claude/skills/cmux/
 cp will-my-claude/skills/cmux/references/* ~/.claude/skills/cmux/references/
 ```
-
-Claude Code를 재시작하면 바로 적용됩니다.
 
 ### (선택) 사이드바 hooks 설정
 
