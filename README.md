@@ -87,6 +87,8 @@ hooks가 하는 일에 대한 자세한 내용은 [hooks-integration.md](skills/
 - [cmux](https://cmux.com) (`brew install cmux`)
 - [Claude Code](https://claude.ai/claude-code) (`npm install -g @anthropic-ai/claude-code`)
 
+> 이 스킬은 cmux **v0.63.1** 기준으로 작성되었습니다. 이후 버전에서 CLI가 변경되면 스킬 업데이트가 필요할 수 있습니다.
+
 ## 라이선스
 
 MIT

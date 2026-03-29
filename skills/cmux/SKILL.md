@@ -12,6 +12,8 @@ allowed-tools: Bash(cmux *)
 
 # cmux Terminal Automation
 
+> Written for cmux **v0.63.1**. If commands fail on a newer version, check [references/cli-reference.md](references/cli-reference.md) or run `cmux --help`.
+
 You are inside **cmux**, a native macOS terminal. The `cmux` CLI lets you control panes, browser, sidebar, and notifications.
 
 > **Prerequisite**: `CMUX_WORKSPACE_ID` must be set (auto-set inside cmux). If absent, you are not in cmux — do not attempt cmux commands.
