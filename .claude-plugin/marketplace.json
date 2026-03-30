@@ -1,5 +1,8 @@
 {
   "name": "will-public-claude",
+  "owner": {
+    "name": "sdgranger"
+  },
   "plugins": [
     {
       "name": "will-public-claude",
