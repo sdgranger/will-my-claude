@@ -16,6 +16,9 @@ allowed-tools:
   - Bash(git:*)
   - Bash(ls:*)
   - Bash(mkdir:*)
+  - Bash(python:*)
+  - Bash(claude:*)
+  - Agent
   - AskUserQuestion
 argument-hint: "[description of the process to capture]"
 arguments:
@@ -235,7 +238,18 @@ Write the file to the location chosen in Round 2:
 
 Create the directory if it does not exist.
 
-### Step 4. Confirm Completion
+### Step 4. Offer Validation
+
+After saving, ask using AskUserQuestion:
+
+> "Skill saved. Would you like to validate it?"
+> - A) Smoke Test — run 2-3 test prompts to check if the skill works as intended
+> - B) Smoke Test + Description Optimization — also optimize triggering accuracy (requires skill-creator plugin)
+> - C) Skip — finish here
+
+Proceed to Phase 4a, 4a+4b, or Step 5 based on the user's choice.
+
+### Step 5. Confirm Completion
 
 Tell the user:
 - Where the skill was saved (full path)
@@ -245,7 +259,139 @@ Tell the user:
 
 ---
 
+## Phase 4a: Smoke Test (Optional)
+
+Quick validation that the generated skill actually works as intended.
+
+### Step 1. Generate Test Prompts
+
+Based on the captured workflow, create 2-3 realistic test prompts — the kind of thing a real user would actually say when invoking this skill. Make them concrete and specific with realistic details.
+
+**Good example:**
+> "Spring Batch Job 만들어줘. 매시간 orders 테이블에서 일별 매출을 집계해서 daily_sales 테이블에 저장하는 거야"
+
+**Bad example:**
+> "Create a batch job"
+
+Present the test prompts to the user and ask for confirmation or edits using AskUserQuestion.
+
+### Step 2. Run Test Prompts
+
+For each confirmed test prompt, spawn a subagent using the Agent tool:
+
+```
+Execute this task using the skill at <skill-path>:
+- Read the SKILL.md first, then follow its instructions
+- Task: <test prompt>
+- Report what you did and whether each step's success criteria was met
+```
+
+Run test prompts in parallel if they are independent.
+
+### Step 3. Review Results
+
+When subagent tasks complete, present the results to the user:
+- Which steps succeeded and which failed
+- Any unexpected behavior or missing instructions
+- Suggested fixes if issues were found
+
+If issues are found, ask using AskUserQuestion:
+> "Fix these issues and re-test, or save as-is?"
+
+If fixing: update the SKILL.md, re-run the failing test(s), and repeat until passing. Then proceed to Phase 4b or Step 5.
+
+---
+
+## Phase 4b: Description Optimization (Optional)
+
+Optimize the skill's description field for accurate triggering. This phase requires the **skill-creator plugin**.
+
+### Step 1. Check skill-creator Availability
+
+Check if the skill-creator plugin is available by looking for its scripts:
+
+```bash
+ls ~/.claude/plugins/marketplaces/claude-plugins-official/plugins/skill-creator/skills/skill-creator/scripts/run_loop.py 2>/dev/null
+```
+
+**If NOT found**, tell the user:
+
+> "Description optimization requires the skill-creator plugin, which is not currently installed."
+>
+> You can optimize the description later by:
+> 1. Install skill-creator: `/plugin marketplace add claude-plugins-official` then `/plugin install skill-creator`
+> 2. Run: `/skill-creator` and tell it you want to optimize the description of an existing skill at `<saved-skill-path>`
+>
+> The skill itself is fully functional — description optimization just improves when Claude auto-invokes it.
+
+Then proceed to Step 5 (Confirm Completion).
+
+**If found**, continue to Step 2.
+
+### Step 2. Generate Trigger Eval Queries
+
+Create 20 eval queries — a mix designed to test the description's triggering accuracy:
+
+**Should-trigger queries (10):**
+- Different phrasings of the same intent (formal, casual, Korean, English mix)
+- Cases where the user doesn't explicitly name the skill but clearly needs it
+- Edge cases specific to this workflow's domain
+
+**Should-not-trigger queries (10):**
+- Near-miss queries that share keywords but need something different
+- Adjacent domain tasks that this skill should NOT handle
+- Queries that a naive keyword match would trigger but shouldn't
+
+Make queries realistic with concrete details — file paths, names, context. Avoid obviously irrelevant queries.
+
+**Format:**
+```json
+[
+  {"query": "매일 자정에 사용자 통계를 집계하는 배치잡 만들어줘", "should_trigger": true},
+  {"query": "기존 배치잡의 실행 로그를 확인해줘", "should_trigger": false}
+]
+```
+
+Present the eval set to the user for review using AskUserQuestion. Iterate until confirmed.
+
+### Step 3. Run Optimization Loop
+
+Save the eval set to a temp file, then run:
+
+```bash
+python -m scripts.run_loop \
+  --eval-set <path-to-eval-set.json> \
+  --skill-path <saved-skill-path> \
+  --model <current-model-id> \
+  --max-iterations 5 \
+  --verbose
+```
+
+Run this from the skill-creator scripts directory:
+`~/.claude/plugins/marketplaces/claude-plugins-official/plugins/skill-creator/skills/skill-creator/`
+
+This takes time. Tell the user: "Description optimization is running. I'll report back when it's done."
+
+Run in background and periodically check progress.
+
+### Step 4. Apply Result
+
+When the loop completes, it outputs JSON with `best_description`. Read the output and:
+
+1. Show the user before/after descriptions and scores
+2. Ask using AskUserQuestion: "Apply this optimized description?"
+3. If yes, update the SKILL.md frontmatter's description field
+
+---
+
 ## Rules
+
+- All questions to the user MUST use AskUserQuestion — never ask via plain text
+- Correction events from the conversation are high-signal — always encode them as Rules in the generated skill
+- Generated skills must be self-contained — they must not reference or depend on skillify's templates at runtime
+- Respect the agentskills.io naming convention: lowercase, hyphens only, max 64 characters
+- Keep generated SKILL.md files focused — if approaching 500 lines, suggest splitting into SKILL.md + references/
+- When detecting work type, prioritize what was done over what files exist — a Python script in a Java project means the task was Python-related
 
 - All questions to the user MUST use AskUserQuestion — never ask via plain text
 - Correction events from the conversation are high-signal — always encode them as Rules in the generated skill

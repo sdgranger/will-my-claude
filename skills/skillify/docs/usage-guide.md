@@ -186,7 +186,57 @@ context: fork                 # 자율 실행일 때만 (inline은 생략)
 
 1. 완성된 SKILL.md를 코드블록으로 출력
 2. 사용자가 확인하면 지정된 위치에 저장
-3. 저장 후 호출 방법 안내: `/<skill-name> [arguments]`
+3. 검증 옵션 제안:
+   - **A) Smoke Test** — 테스트 프롬프트로 스킬 동작 검증
+   - **B) Smoke Test + Description Optimization** — 동작 검증 + 트리거 정확도 최적화
+   - **C) Skip** — 바로 완료
+
+---
+
+## Phase 4a: Smoke Test (선택)
+
+스킬 저장 후 실제로 의도대로 동작하는지 빠르게 검증합니다.
+
+1. 캡처된 워크플로우 기반으로 **2-3개 현실적인 테스트 프롬프트** 자동 생성
+2. 사용자 확인 후 서브에이전트로 실행
+3. 각 스텝의 성공 기준 충족 여부 확인
+4. 문제 발견 시 SKILL.md 수정 → 재테스트 반복
+
+**예시 테스트 프롬프트:**
+```
+"매시간 orders 테이블에서 일별 매출을 집계해서 daily_sales 테이블에 저장하는
+Spring Batch Job 만들어줘"
+```
+
+---
+
+## Phase 4b: Description Optimization (선택)
+
+생성된 스킬의 `description` 필드가 Claude에 의해 정확하게 트리거되도록 최적화합니다.
+
+**요구사항:** skill-creator 플러그인 필요
+
+### skill-creator가 설치된 경우
+
+1. 20개 트리거 평가 쿼리 생성 (should-trigger 10 + should-not-trigger 10)
+2. 사용자 검토 후 최적화 루프 실행 (`run_loop.py`)
+3. train/test 분리로 과적합 방지, 최대 5회 반복
+4. 최적 description 적용
+
+### skill-creator가 설치되지 않은 경우
+
+안내 메시지를 표시합니다:
+```
+Description 최적화를 위해 skill-creator 플러그인이 필요합니다.
+
+나중에 최적화하려면:
+1. /plugin marketplace add claude-plugins-official
+2. /plugin install skill-creator
+3. /skill-creator 실행 후 "기존 스킬의 description을 최적화하고 싶어" 요청
+   스킬 경로: <저장된 스킬 경로>
+```
+
+스킬 자체는 description 최적화 없이도 완전히 동작합니다. 최적화는 Claude가 자동으로 스킬을 호출하는 정확도만 개선합니다.
 
 ---
 
