@@ -348,3 +348,28 @@ ls ~/.claude/skills/cmux/SKILL.md
 - cmux 공식 사이트: https://cmux.com
 - cmux는 Ghostty 터미널 엔진 기반이므로 `~/.config/ghostty/config`로 터미널 테마/폰트 등을 설정할 수 있습니다.
 - 이 가이드는 cmux v0.63.1, Claude Code v2.1.87 기준으로 작성되었습니다.
+
+---
+
+## cmux 스킬 구성
+
+`will-public-claude-cmux` 플러그인은 4개의 스킬로 구성됩니다:
+
+| 스킬 | 역할 |
+|---|---|
+| `cmux` | cmux 환경 감지 및 패인/사이드바/알림 기본 제어 |
+| `cmux-browser` | 내장 브라우저에서 로컬 웹 UI 열기 및 인터랙션 |
+| `cmux-parallel` | 2개 이상 프로세스 병렬 실행 및 상태 추적 |
+| `cmux-run` | 별도 패인에서 장시간 프로세스 실행 및 모니터링 |
+
+`cmux-browser`, `cmux-parallel`, `cmux-run`은 `cmux` 스킬의 레퍼런스 문서(`references/`)를 공유합니다.
+
+### (선택) 사이드바 hooks 설정
+
+사이드바에 알림 링, "Running" 상태 등이 자동 표시되길 원하면 hooks를 추가로 설정하세요:
+
+```bash
+bash setup/setup-cmux-hooks.sh
+```
+
+스킬만으로도 cmux 활용에는 문제없습니다. hooks는 사이드바 연동만 추가합니다.
