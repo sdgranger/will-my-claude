@@ -8,11 +8,11 @@ Claude Code를 더 잘 활용하기 위한 스킬 모음입니다.
 
 | 스킬 | 설명 | 플러그인 |
 |---|---|---|
-| [cmux](skills/cmux/SKILL.md) | cmux 환경 감지 및 패인/사이드바/알림 제어 | `will-public-claude-cmux` |
-| [cmux-browser](skills/cmux-browser/README.md) | 내장 브라우저에서 로컬 웹 UI 열기 및 인터랙션 | `will-public-claude-cmux` |
-| [cmux-parallel](skills/cmux-parallel/README.md) | 2개 이상 프로세스 병렬 실행 및 상태 추적 | `will-public-claude-cmux` |
-| [cmux-run](skills/cmux-run/README.md) | 별도 패인에서 장시간 프로세스 실행 및 모니터링 | `will-public-claude-cmux` |
-| [skillify](skills/skillify/README.md) | 대화 기록 기반 재사용 가능한 SKILL.md 자동 생성 | `will-public-claude-skillify` |
+| [cmux](plugins/cmux/skills/cmux/SKILL.md) | cmux 환경 감지 및 패인/사이드바/알림 제어 | `will-public-claude-cmux` |
+| [cmux-browser](plugins/cmux/skills/cmux-browser/README.md) | 내장 브라우저에서 로컬 웹 UI 열기 및 인터랙션 | `will-public-claude-cmux` |
+| [cmux-parallel](plugins/cmux/skills/cmux-parallel/SKILL.md) | 2개 이상 프로세스 병렬 실행 및 상태 추적 | `will-public-claude-cmux` |
+| [cmux-run](plugins/cmux/skills/cmux-run/README.md) | 별도 패인에서 장시간 프로세스 실행 및 모니터링 | `will-public-claude-cmux` |
+| [skillify](plugins/skillify/skills/skillify/README.md) | 대화 기록 기반 재사용 가능한 SKILL.md 자동 생성 | `will-public-claude-skillify` |
 
 ---
 
@@ -49,7 +49,7 @@ GitHub에 업데이트가 올라오면 자동으로 반영됩니다.
 ## 상세 문서
 
 - **cmux 계열 스킬**: [setup/cmux-claude-code-guide.md](setup/cmux-claude-code-guide.md)
-- **skillify**: [skills/skillify/README.md](skills/skillify/README.md)
+- **skillify**: [plugins/skillify/skills/skillify/README.md](plugins/skillify/skills/skillify/README.md)
 
 ---
 
